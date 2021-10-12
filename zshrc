@@ -1,23 +1,23 @@
-set -o vi
-alias ll='ls -alhG'
-alias chdir='cd'
+set -o vi # vi mode
+alias ll='ls -alhGF' # Colorize, trailing slashes on directories, all
 
-# Vim
-#alias vim='/Applications/MacVim.app/Contents/MacOS/vim'
-alias grep='grep --color=always'
+# vim as editor, use macvim internal vim on osx
+case "$OSTYPE" in
+  darwin*)
+    alias vim='/Applications/MacVim.app/Contents/MacOS/vim'
+;;
+esac
 export EDITOR=vim
 
-# Gradle Completion History
-export GRADLE_CACHE_TTL_MINUTES=$(expr 1440 \* 21)
-export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
+# grep
+alias grep='grep --color=always'
 
-# Completions
+# zsh completions
  if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
 fi
 typeset -U fpath
-
 autoload -U compinit
 compinit -u
 
@@ -26,7 +26,21 @@ zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
 zstyle ':completion:*' use-cache on
 set corectall #Spelling correction for completions
 
-# Prompts
+# zsh syntax highlighting
+ case "$OSTYPE" in
+  darwin*)
+    export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$(brew --prefix)/share/zsh-syntax-highlighting/highlighters
+	source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  ;;
+  linux*)
+	source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  ;;
+  dragonfly*|freebsd*|netbsd*|openbsd*)
+    # ...
+  ;;
+esac
+
+# zsh prompt
 autoload -U promptinit
 promptinit
 prompt off
@@ -64,10 +78,6 @@ setopt share_history
 # Config
 setopt autocd
 setopt extendedglob
-
-# Syntax Highlighting
-source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
 export GNUTERM=x11
 
 autoload -U zmv
@@ -76,24 +86,15 @@ export PATH="/usr/local/sbin:$PATH"
 # Add current directory to path
 export PATH=.:$PATH
 export PATH=$HOME/bin:$PATH
-#export JAVA_HOME=$(/usr/libexec/java_home)
 
-# Netflix AWS Configuratin
-export EC2_OWNER_ID=567395257996
-export EC2_REGION=us-east-1
-export REGION=us-east-1
-export NETFLIX_ENVIRONMENT=test
-export EC2_AVAILABILITY_ZONE=us-east-1a
-export MANTIS_ENVIRONMENT=dev
+#
+# user defined functions
+#
 
 alias urlencode='python -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1]))"'
 function sloc() {
 	find . -name "*.$1" | xargs wc -l
 }
-
-# Nebula
-alias nebulastrap='curl -s "https://stash.corp.netflix.com/projects/NEBULA/repos/bootstrap/browse/nebulaWrapper.sh?raw" | bash'
-alias refreshdeps='./gradlew -x test -PdependencyLock.overrideFile=override.lock --info clean generateLock saveLock'
 
 alias slack="open -na 'Google Chrome' --args '--app=https://netflix.slack.com'"
 alias isodate='date -u +%FT%TZ'
@@ -113,31 +114,12 @@ gifify() {
   fi
 }
 
-alias findbugs="spotbugs &"
-
-# added by travis gem
-[ -f /Users/crioux/.travis/travis.sh ] && source /Users/crioux/.travis/travis.sh
-
 weather() {
   curl https://wttr.in/$1
 }
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/crioux/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/crioux/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/crioux/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/crioux/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 
+# golang configuration
 PATH=$PATH:/usr/local/go/bin
 GOPATH=$HOME/go
-
-PATH=$PATH:/home/pi/go/bin
+#PATH=$PATH:/home/pi/go/bin
