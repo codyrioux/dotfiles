@@ -3,7 +3,7 @@ alias ll='ls -alhG'
 alias chdir='cd'
 
 # Vim
-alias vim='/Applications/MacVim.app/Contents/MacOS/vim'
+#alias vim='/Applications/MacVim.app/Contents/MacOS/vim'
 alias grep='grep --color=always'
 export EDITOR=vim
 
@@ -66,7 +66,7 @@ setopt autocd
 setopt extendedglob
 
 # Syntax Highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 export GNUTERM=x11
 
@@ -76,7 +76,7 @@ export PATH="/usr/local/sbin:$PATH"
 # Add current directory to path
 export PATH=.:$PATH
 export PATH=$HOME/bin:$PATH
-export JAVA_HOME=$(/usr/libexec/java_home)
+#export JAVA_HOME=$(/usr/libexec/java_home)
 
 # Netflix AWS Configuratin
 export EC2_OWNER_ID=567395257996
@@ -137,3 +137,7 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+PATH=$PATH:/usr/local/go/bin
+GOPATH=$HOME/go
+
+PATH=$PATH:/home/pi/go/bin
